@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!-- Copyright (c) 2018-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+    <data>
+
+      <template id="website_product_sorting_and_shopping_assert_front_end" name="website shop sort  frontend" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+          <link rel='stylesheet' href='/website_product_sorting_and_shopping/static/src/css/website_product_sorting_and_shopping.css'/>
+          <script type="text/javascript" src="/website_product_sorting_and_shopping/static/src/js/website_sorting_and_shopping.js"></script>
+        </xpath>
+      </template>
+
+
+    <template id="assets_editor"
+        inherit_id="website.assets_editor"
+        name="Shop Editor"
+        >
+      <xpath expr="/t" position="inside">
+       <script type="text/javascript" src="/website_product_sorting_and_shopping/static/src/js/website_product_sorting_and_shopping.js"></script>
+      </xpath>
+    </template>
+    <template id="inherit_website_sale_products_refine_template" inherit_id="website_sale.products" priority="100" name="Show Refine By" active="True" customize_show="True">
+      <!-- <xpath expr="//div[hasclass('products_pager')]" position="inside">
+        <t t-set='wk_sorting' t-value="env['wk.website.sorting'].sudo().search([('model_name','=','product.template')]).wk_sort_attribute_ids"/>
+
+        <form t-if='wk_sorting' class='pagination short_product ml-2' method='POST' t-att-action='website.get_refine_action(keep,slug,wk_brand,category,search,order, page=(pager["page"]["num"] if pager["page"]["num"]>1 else None))'
+              >
+          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+          <div class="form-check">
+            <select class="form-control btn btn-secondary" name='order_by' id="short_product_by">
+              <t t-foreach="wk_sorting" t-as="s">
+                <t t-if="order == '%s %s,website_published desc,website_sequence desc , id desc' % (s.fields_name,s.order)">
+                  <option t-att-value= "'%s %s' % (s.fields_name,s.order)" selected='selected'>
+                    <t t-esc="s.name" />
+                  </option>
+                </t>
+                <t t-if ="order != '%s %s,website_published desc,website_sequence desc , id desc' % (s.fields_name,s.order)">
+                  <option t-att-value= "'%s %s' % (s.fields_name,s.order)">
+                    <t t-esc="s.name" />
+                  </option>
+                </t>
+              </t>
+            </select>
+          </div>
+        </form>
+      </xpath> -->
+      <xpath expr="//div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+        <t t-set='wk_sorting' t-value="env['wk.website.sorting'].sudo().search([('model_name','=','product.template')]).wk_sort_attribute_ids"/>
+
+        <t t-set="website_sale_sort_by_sortable" t-value='website.get_sorting_attribute(wk_sorting, keep,slug,wk_brand,category,search, page=(pager["page"]["num"] if pager["page"]["num"]>1 else None))'/>
+        <t t-set="website_sale_sort_by_sortable_current" t-value="[sort for sort in website_sale_sort_by_sortable if sort[1]==request.params.get('order', '')]"/>
+        <div class="dropdown ml-2 dropdown_sort_by_product">
+          <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+            <t t-if='len(website_sale_sort_by_sortable_current)'>
+              <span>Refine by: <t t-raw='website_sale_sort_by_sortable_current[0][0]'/>
+            </span>
+          </t>
+          <t t-else='1'>
+            <span>Refine by</span>
+          </t>
+        </a>
+        <div class="dropdown-menu" role="menu">
+          <t t-foreach="website_sale_sort_by_sortable" t-as="sortby">
+            <a role="menuitem" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+              <span t-raw="sortby[0]"/>
+            </a>
+          </t>
+        </div>
+        </div>
+      </xpath>
+    </template>
+    <!-- <template id="wk_sort" inherit_id="website_sale.sort" >
+      <xpath expr="//t[@t-set='website_sale_sortable']" position="replace">
+        <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
+        <t t-set="wk_sorting" t-value="env['wk.website.sorting'].sudo().search([('model_name','=','product.template')]).wk_sort_attribute_ids"/>
+
+        <t t-if="wk_sorting">
+          <t t-foreach="wk_sorting" t-as="sort">
+            <t t-set="website_sale_sortable" t-value="website_sale_sortable+[(sort.name,sort.fields_name + ' ' + sort.order)]"/>
+          </t>
+        </t>
+      </xpath>
+    </template> -->
+
+         <template id="inherit_website_sale_products_shop_by_template" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Sort by">
+        <xpath expr="//div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+            <t t-set="shop_product_label">Product</t>
+            <t t-set="product_brand_label">Brands</t>
+            <t t-set="product_category_label">Category</t>
+            <t t-set="website_sale_shop_by_sortable" t-value="[
+                (shop_product_label, '/shop'),
+                (product_brand_label, '/product/brands'),
+                (product_category_label, '/product/categories'),
+            ]"/>
+            <t t-set="website_sale_shop_by_sortable_current" t-value="[sort for sort in website_sale_shop_by_sortable if sort[1]==request.params.get('order', '')]"/>
+            <div class="dropdown ml-2 dropdown_sorty_by_product">
+                <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+                    <t t-if='len(website_sale_shop_by_sortable_current)'>
+                        <span>Shop by: <t t-raw='website_sale_shop_by_sortable_current[0][0]'/></span>
+                    </t>
+                    <t t-else='1'>
+                        <span>Shop by</span>
+                    </t>
+                </a>
+                <div class="dropdown-menu" role="menu">
+                    <t t-foreach="website_sale_shop_by_sortable" t-as="sortby">
+                        <a role="menuitem" t-att-href="sortby[1]" class="dropdown-item">
+                            <span t-raw="sortby[0]"/>
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+    </template>
+      <template id="inherit_website_sale_products_brand_category_template" inherit_id="website_sale.products"  priority="100"  name="Category and Brand Description" active="True" customize_show="True" >
+        <xpath expr="//div[hasclass('products_pager')]" position="after">
+          <div class="col-md-11 offset-1 mt16" id="products_category_description_grid">
+            <t t-if="category and  category.name">
+              <div class="col-md-3"  >
+                <t t-if='category.image_medium'>
+                  <span t-field="category.image_medium" t-options='{"widget": "image", "class": "img-rounded" }'/>
+                </t>
+              </div>
+              <div class="col-md-8">
+                  <h3><b><t t-esc="category.name"/><t t-if="category.category_description">:</t></b></h3><p><t t-esc="category.category_description"/></p>
+              </div>
+            </t>
+            <!-- <t t-set="wk_brands" t-value="brand_set and website.get_wk_brands(brand_set)"/> -->
+            <t t-if="wk_brand and  wk_brand.name">
+              <div class="col-md-3" >
+                <t t-if='wk_brand.image'>
+                  <span t-field="wk_brand.image" t-options='{"widget": "image", "class": "img-rounded" }'/>
+                </t>
+              </div>
+              <div class="col-md-8">
+                  <h3><b><t t-esc="wk_brand.name"/><t t-if="wk_brand.description">:</t></b></h3><p><t t-esc="wk_brand.description"/></p>
+              </div>
+            </t>
+          </div>
+        </xpath>
+      </template>
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sort_attribute_manager,wk.sort.attribute,model_wk_sort_attribute,sales_team.group_sale_manager,1,1,1,1
+access_sort_attribute_all,wk.sort.attribute,model_wk_sort_attribute,,1,0,0,0
+access_sort_website_manager,wk.website.sorting,model_wk_website_sorting,sales_team.group_sale_manager,1,1,1,1
+access_sort_website_all,wk.website.sorting,model_wk_website_sorting,,1,0,0,0

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!-- Copyright (c) 2018-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+    <data>
+		<template id="brand_item" name="Brand item">
+			<form action="#" method="post">
+				<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+				<div itemscope="itemscope" itemtype="http://schema.org/Product">
+					<div class="oe_product_image">
+								<a  t-att-href="keep('/shop/brand/'+slug(product),attrib_brand = '%s-%s' % (product.id,product.id))">
+							<img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')"/>
+							</a>
+				</div>
+					<section>
+								<h5><strong><a itemprop="name"  t-att-href="keep('/shop/brand/'+slug(product),attrib_brand = '%s-%s' % (product.id,product.id))"> <t t-esc='product.name'/></a></strong></h5>
+						<div class="text-info oe_subdescription" contenteditable="false">
+							<div itemprop="description" t-field="product.description"></div>
+						</div>
+					</section>
+				</div>
+			</form>
+		</template>
+		<template id="wk_website_product_sort_by" name="Shop By Brands ">
+			<form class='col-md-6'>
+				<div class="row">
+					<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+					<t t-set="shop_product_label">Product</t>
+					<t t-set="product_brand_label">Brands</t>
+					<t t-set="product_category_label">Category</t>
+					<t t-set="website_sale_shop_by_sortable" t-value="[
+						(shop_product_label, '/shop'),
+						(product_brand_label, '/product/brands'),
+						(product_category_label, '/product/categories'),
+					]"/>
+					<t t-set="website_sale_shop_by_sortable_current" t-value="[sort for sort in website_sale_shop_by_sortable if sort[1]==request.params.get('order', '')]"/>
+					<div class="dropdown ml-2 dropdown_sorty_by">
+						<a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+							<t t-if='len(website_sale_shop_by_sortable_current)'>
+								<span>Shop by: <t t-raw='website_sale_shop_by_sortable_current[0][0]'/>
+								</span>
+							</t>
+							<t t-else='1'>
+								<span>Shop by</span>
+							</t>
+						</a>
+						<div class="dropdown-menu" role="menu">
+							<t t-foreach="website_sale_shop_by_sortable" t-as="sortby">
+								<a role="menuitem" t-att-href="sortby[1]" class="dropdown-item">
+									<span t-raw="sortby[0]"/>
+								</a>
+							</t>
+						</div>
+					</div>
+				</div>
+			</form>
+		</template>
+		<template id="wk_website_shop_by_product_brands" name="Website Prodcut Brands">
+				<t t-call="website.layout">
+					<t t-set="additional_title">Website - Product - Brands</t>
+					<div id="wrap" t-attf-class="wrapper">
+						<div class="container py-2 oe_website_sale">
+							<div class="products_pager form-inline justify-content-center">
+								<t t-call="website_sale.search">
+									<t t-set="_classes">o_website_sale_search</t>
+								</t>
+								<t t-call="website_product_sorting_and_shopping.wk_website_product_sort_by">
+									<t t-set="_classes">ml-2</t>
+								</t>
+							</div>
+							<div class='row mt-3'>
+								<div class="hidden" id="products_grid_before"></div>
+								<div class="col-md-12 brands_grid" id="products_grid">
+									<table width="100%" id="wk_products_grid">
+										<tbody>
+											<tr t-ignore="true">
+												<td t-foreach="range(0,rows)" t-as="row" t-attf-width="#{100/rows}%"></td>
+											</tr>
+											<tr t-foreach="bins" t-as="tr_product">
+												<t t-foreach="tr_product" t-as="td_product">
+													<t t-if="td_product">
+														<t t-set="product" t-value="td_product['product']"/>
+														<td style="padding: 5px;border: 1px solid rgba(100, 100, 100, 0.2);"
+																>
+															<div class="oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'">
+																<t t-set="product_image_big" t-value="td_product['x']+td_product['y'] > 2"/>
+																<t t-call="website_product_sorting_and_shopping.brand_item"/>
+															</div>
+														</td>
+													</t>
+													<td t-if="not td_product" class="oe-height-2"/>
+												</t>
+											</tr>
+										</tbody>
+									</table>
+									<t t-if="not bins">
+										<div class="text-center text-muted">
+											<h3 class="css_editable_display">No Brands defined.</h3>
+											<t groups="base.group_website_publisher">
+												<p groups="base.group_sale_manager">Use the <i>'Content'</i> top menu to create a new Brands.</p>
+											</t>
+										</div>
+									</t>
+								</div>
+							</div>
+							<div class="products_pager form-inline justify-content-center mt-3">
+								<t t-call="website.pager"/>
+							</div>
+						</div>
+					</div>
+				</t>
+		</template>
+			<!-- <template id="wk_website_product_brands_search" name="Prodcut Brands Search"
+						inherit_id="website_product_sorting_and_shopping.wk_website_shop_by_product_brands" active="True" customize_show="True">
+				<xpath expr="//div[@id='wrap']/div[@class='container']/div[@class='col-md-8 offset-2 row mt16']" position="inside">
+					<form action="/product/brands/" class="pagination  col-md-6" method="post" >
+						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+							<div class="input-group" >
+								<input type="text" name="search" class="form-control text-primary" placeholder="Search..." t-att-value='search'/>
+								<div class="input-group-append">
+									<span class="input-group-btn">
+										<button class="btn btn-default a-submit" type='submit'><i class="fa fa-search text-primary"></i></button>
+									</span>
+								</div>								
+							</div>
+						</form>
+				</xpath>
+		</template> -->
+		
+	</data>
+</odoo>

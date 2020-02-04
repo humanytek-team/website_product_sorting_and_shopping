@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Copyright (c) 2018-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+    <data>
+        <record id="wk_inherited_product_public_category_form_view_website_shop_short" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherited.wk.shop.short</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                 <notebook>
+                   <page string="Category Description">
+                        <div>
+                            <div>
+                                <label for="category_description" string="Description (About this category)"/>
+                                <field name = "category_description" />
+                            </div>
+                        </div>
+                    </page>
+                </notebook>
+            </xpath>
+            </field>
+        </record>
+        <record id="wk_sort_attribute_form_view" model="ir.ui.view">
+            <field name="name">wk.sort.attribute.form.view</field>
+            <field name="model">wk.sort.attribute</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sorting " create="false" class="oe_form_configuration">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name = "name" class="oe_inline"/>
+                            <field name='by_default' class='oe_inline'/>
+                        </group>
+                        <group>                                
+                                <field name='active' class='oe_inline'/>
+                                <field name = "model_name" class="oe_inline"/>
+                        </group>
+                    </group>
+                    <group>                    
+                        <field name = "fields_name" class="oe_inline"/>
+                        <field name = "order" class="oe_inline "/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+         <record model="ir.ui.view" id="wk_sort_attribute_tree_view">
+            <field name="name">wk.sort.attribute.tree.view</field>
+            <field name="model">wk.sort.attribute</field>
+            <field name="type">tree</field>
+            <field name="arch"  type="xml">
+                <tree>
+                    <field name="by_default" string='Use As Default'/>
+                    <field name="name" string="Sorting"/>
+                    <field name="fields_name" string='Field'/>
+                    <field name="order" string='Order'/>
+                    <field name="model_name" string="Configuration for Model"/>
+
+                </tree>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="wk_website_sorting_tree_view">
+            <field name="name">wk.website.sorting.tree.view</field>
+            <field name="model">wk.website.sorting</field>
+            <field name="type">tree</field>
+            <field name="arch"  type="xml">
+                <tree>
+                    <field name="model_name" string="Configuration for"/>
+                    <field name="name" string="Sorting"/>
+                </tree>
+            </field>
+        </record>
+        <record id="wk_website_sorting_form_view" model="ir.ui.view">
+            <field name="name">wk.website.sorting.form.view</field>
+            <field name="model">wk.website.sorting</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sorting "  class="oe_form_configuration">
+                    <sheet>
+                        <group>
+                            <field name = "name" class="oe_inline"/>
+                            <field name = "model_name" class="oe_inline"/>
+                        </group>
+                        <separator string="Sorting Attributes"/>
+                        <group>
+                            <field name="wk_sort_attribute_ids"
+                              class="oe_inline" widget = "many2many_tags"
+                              domain="[('model_name', '=',model_name)]"
+                              required='1'/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_wk_website_sorting">
+            <field name="name">Website  Sorting</field>
+            <field name="res_model">wk.website.sorting</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="wk_website_sorting_tree_view"/>
+        </record>
+        <record model="ir.actions.act_window" id="action_wk_sort_attribute">
+            <field name="name">Website  Sorting Attribute</field>
+            <field name="res_model">wk.sort.attribute</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="wk_sort_attribute_tree_view"/>
+        </record>
+
+         <menuitem
+            id="menu_wk_website_sorting_submenu"
+            action="action_wk_website_sorting"
+            parent="website_product_brands.menu_product_brand_root_menu"
+            sequence="11"  name="Website Sorting "
+            string="Website Sorting " />
+        <menuitem
+            id="menu_wk_sort_attribute_submenu"
+            action="action_wk_sort_attribute"
+            parent="website_product_brands.menu_product_brand_root_menu"
+            sequence="12"
+            name="Website Sorting Attributes "
+            string="Website Sorting Attributes " />
+
+
+  </data>
+</odoo>

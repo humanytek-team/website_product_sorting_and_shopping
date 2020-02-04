@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+<!-- Copyright (c) 2018-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+         <record id="wk_sort_attribute_website_published_desc" model="wk.sort.attribute">
+            <field name="name">Relevance </field>
+            <field name ="order">desc</field>
+            <field name ="by_default">1</field>
+            <field name = "fields_name">website_published</field>
+            <field name = "model_name">product.template</field>
+        </record>
+    	 <!-- <record id="wk_sort_attribute_sales_count_product_desc" model="wk.sort.attribute">
+            <field name="name">Popularity</field>
+            <field name ="order">desc</field>
+            <field name = "fields_name">wk_sales_count</field>
+            <field name = "model_name">product.template</field>
+        </record> -->
+
+         <record id="wk_sort_attribute_list_price_product_desc" model="wk.sort.attribute">
+            <field name="name">High Price</field>
+            <field name ="order">desc</field>
+            <field name = "fields_name">list_price</field>
+            <field name = "model_name">product.template</field>
+        </record>
+         <record id="wk_sort_attribute_list_price_product_asc" model="wk.sort.attribute">
+            <field name="name">Low Price</field>
+            <field name ="order">asc</field>
+            <field name = "fields_name">list_price</field>
+            <field name = "model_name">product.template</field>
+        </record>
+         <record id="wk_sort_attribute_create_date_product_desc" model="wk.sort.attribute">
+            <field name="name">Fresh Arrivals</field>
+            <field name ="order">desc</field>
+            <field name = "fields_name">create_date</field>
+            <field name = "model_name">product.template</field>
+        </record>
+         <!-- <record id="wk_sort_attribute_qty_available_product_desc" model="wk.sort.attribute">
+            <field name="name">Availability</field>
+            <field name ="order">desc</field>
+            <field name = "fields_name">qty_available</field>
+            <field name = "model_name">product.template</field>
+        </record> -->
+
+        <!--@@@@@@@@@@@@@@@@@@@@@@     wk.website.sorting     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+        <record id="wk_website_sort_product" model="wk.website.sorting">
+            <field name="name">Product Sorting</field>
+            <field name = "model_name">product.template</field>
+             <field eval="[(6,0,[
+                ref('wk_sort_attribute_website_published_desc'),
+                ref('wk_sort_attribute_list_price_product_desc'),
+                ref('wk_sort_attribute_list_price_product_asc'),
+                ref('wk_sort_attribute_create_date_product_desc')])]"
+                name="wk_sort_attribute_ids"/>
+        </record>
+    </data>
+</openerp>
